@@ -1,0 +1,67 @@
+{
+	"name": "convex-svelte-helpers",
+	"version": "0.1.0",
+	"description": "Async Svelte queries and valibot forms for Convex",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Home-Maintenance-Solution/convex-svelte-helpers.git"
+	},
+	"type": "module",
+	"files": [
+		"dist",
+		"!dist/**/*.test.*"
+	],
+	"sideEffects": [
+		"**/*.css"
+	],
+	"exports": {
+		"./query": {
+			"types": "./dist/query/index.d.ts",
+			"svelte": "./dist/query/index.js",
+			"default": "./dist/query/index.js"
+		},
+		"./forms": {
+			"types": "./dist/forms/index.d.ts",
+			"svelte": "./dist/forms/index.js",
+			"default": "./dist/forms/index.js"
+		},
+		"./forms/server": {
+			"types": "./dist/forms/server/index.d.ts",
+			"default": "./dist/forms/server/index.js"
+		}
+	},
+	"scripts": {
+		"build": "svelte-kit sync && svelte-package && publint",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"prepublishOnly": "pnpm check && pnpm build"
+	},
+	"dependencies": {
+		"runed": "^0.37.1"
+	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.70.0",
+		"convex": "^1.45.0",
+		"convex-svelte": "^0.14.0",
+		"svelte": "^5.56.0",
+		"valibot": "^1.3.0"
+	},
+	"peerDependenciesMeta": {
+		"valibot": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@sveltejs/kit": "^2.70.3",
+		"@sveltejs/package": "^2.5.0",
+		"@sveltejs/vite-plugin-svelte": "^6.2.0",
+		"convex": "^1.45.0",
+		"convex-svelte": "^0.14.0",
+		"publint": "^0.3.0",
+		"svelte": "^5.56.9",
+		"svelte-check": "^4.7.5",
+		"typescript": "^6.0.2",
+		"valibot": "^1.3.1",
+		"vite": "^8.0.16"
+	}
+}
