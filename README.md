@@ -124,7 +124,9 @@ export const add = formMutation({
 </form>
 ```
 
-A field's errors show once it loses focus, and every field's once the form is submitted. Use `createValibotAction` and `action:` for forms that submit to an action, and `convexId("tasks")` in a schema for a document ID.
+A field's errors show once it loses focus, and every field's once the form is submitted. Use `createValibotAction` and `action:` for forms that submit to an action.
+
+Schemas can use `convexId("tasks")` for a document ID. For other custom schemas, set the Convex validator the function's arguments should use with `withConvexValidator(v.custom<Hours>(isNumber), v.number())`. Both come from `convex-svelte-helpers/forms/server`, which is also safe to import in the browser.
 
 Optionally, set how forms show errors and confirm leaving, like with your toast and dialog components:
 

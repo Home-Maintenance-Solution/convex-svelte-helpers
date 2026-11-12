@@ -1,6 +1,6 @@
 {
 	"name": "convex-svelte-helpers",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Async Svelte queries and valibot forms for Convex",
 	"license": "MIT",
 	"repository": {

@@ -1,4 +1,5 @@
-// Runs inside Convex functions, so nothing here may import Svelte.
+// Runs inside Convex functions, so nothing here may import Svelte. Nothing here is server-only
+// either, so schemas the browser also uses can import from it.
 import type { RegisteredAction, RegisteredMutation } from "convex/server";
 import { ConvexError, v as cv, type GenericId, type Validator } from "convex/values";
 import * as v from "valibot";
@@ -8,19 +9,25 @@ export type { FormResult } from "../shared.js";
 
 type AnySchema = v.BaseSchema<any, any, any>;
 
+/**
+ * Sets the Convex validator `valibotToConvex` uses for a schema it can't translate itself,
+ * like a `v.custom` one: `withConvexValidator(v.custom<Hours>(isNumber), v.number())`
+ */
+export function withConvexValidator<TSchema extends AnySchema>(schema: TSchema, validator: Validator<any, any, any>) {
+	return Object.assign(schema, { convexValidator: validator });
+}
+
 /** A valibot schema for a Convex document ID, which `valibotToConvex` turns into `v.id(tableName)` */
 export function convexId<TTableName extends string>(tableName: TTableName, message?: string) {
-	const schema = v.custom<GenericId<TTableName>>(
-		(input) => typeof input === "string",
-		message ?? `Please select a valid ${tableName}`,
+	return withConvexValidator(
+		v.custom<GenericId<TTableName>>((input) => typeof input === "string", message ?? `Please select a valid ${tableName}`),
+		cv.id(tableName),
 	);
-	// valibotToConvex tells it apart from other custom schemas by its type
-	Object.defineProperty(schema, "type", { value: "convex_id" });
-	return Object.assign(schema, { tableName });
 }
 
 /** The Convex validator matching a valibot schema, for a form function's arguments */
 export function valibotToConvex(schema: AnySchema): Validator<any, any, any> {
+	if ("convexValidator" in schema) return schema.convexValidator as Validator<any, any, any>;
 	switch (schema.type) {
 		case "object":
 			return cv.object(
@@ -33,8 +40,6 @@ export function valibotToConvex(schema: AnySchema): Validator<any, any, any> {
 			);
 		case "string":
 			return cv.string();
-		case "convex_id":
-			return cv.id((schema as ReturnType<typeof convexId>).tableName);
 		case "number":
 			return cv.number();
 		case "boolean":
@@ -62,7 +67,7 @@ export function valibotToConvex(schema: AnySchema): Validator<any, any, any> {
 			if ((schema as v.InstanceSchema<any, any>).class === ArrayBuffer) return cv.bytes();
 			throw new Error("Only v.instance(ArrayBuffer) can be a form field");
 		default:
-			throw new Error(`Unsupported valibot schema type: ${schema.type}`);
+			throw new Error(`Unsupported valibot schema type: ${schema.type}. Set its Convex validator with withConvexValidator.`);
 	}
 }
 
