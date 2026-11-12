@@ -1,10 +1,9 @@
-import type { GenericId } from "convex/values";
-
 export type Prettify<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
 export type MaybePromise<T> = T | Promise<T>;
 
-export type DeepPartial<T> = T extends GenericId<string>
+/** Leaves primitives whole, including branded ones like `GenericId` or `number & { __brand: "Hours" }` */
+export type DeepPartial<T> = T extends string | number | boolean | bigint | symbol
 	? T
 	: T extends object
 		? { [P in keyof T]?: DeepPartial<T[P]> }

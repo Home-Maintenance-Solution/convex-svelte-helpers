@@ -84,7 +84,8 @@ export class FormValidationError extends ConvexError<{
 	}
 }
 
-type FormArgs<TSchema extends AnySchema> = { formData: v.InferInput<TSchema>; timezone: string };
+/* The browser sends the form's validated data, so the schema's output */
+type FormArgs<TSchema extends AnySchema> = { formData: v.InferOutput<TSchema>; timezone: string };
 
 type FormHandlerDefinition<Ctx, TSchema extends AnySchema, TReturns> = {
 	schema: TSchema;

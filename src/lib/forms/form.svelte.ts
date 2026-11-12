@@ -174,6 +174,11 @@ export function hasTaintedForm() {
  * once the form is submitted.
  */
 export class Form<TFormData extends FormDataGeneric, TState extends Record<string, unknown>> {
+	/**
+	 * Type only, never set. A component taking a `GenericForm<TFormData>` would otherwise infer
+	 * `TFormData` from `data`, which is only a partial of it.
+	 */
+	declare readonly "~formData"?: (data: TFormData) => void;
 	schema: ValibotObjectSchema<TFormData>;
 	state: TState;
 	#shouldSubmit: FormParameters<TFormData, TState>["shouldSubmit"];
